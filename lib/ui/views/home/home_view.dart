@@ -92,6 +92,30 @@ class HomeView extends StackedView<HomeViewModel> {
           ),
         ),
       ),
+      floatingActionButton: InkWell(
+        onTap: viewModel.navigateToAddExpenseView,
+        child: Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100),
+            color: kcBlue,
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x0A000000), // hitam 3.9% opacity
+                offset: Offset(0, 4), // x=0, y=4
+                blurRadius: 8, // blur
+                spreadRadius: 4, // spread
+              ),
+            ],
+          ),
+          child: const Icon(
+            Icons.add,
+            size: 16,
+            color: kcWhite,
+          ),
+        ),
+      ),
     );
   }
 

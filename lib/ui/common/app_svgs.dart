@@ -8,4 +8,7 @@ class AppSvgs {
   static const String home = 'assets/svgs/home.svg';
   static const String sports = 'assets/svgs/basketball.svg';
   static const String entertainment = 'assets/svgs/clapper-board.svg';
+  static const String angleLeft = 'assets/svgs/angle-left.svg';
+  static const String calendar = 'assets/svgs/calendar.svg';
+  static const String close = 'assets/svgs/multiply.svg';
 }

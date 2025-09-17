@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_svg: ^2.2.1
+  intl: ^0.20.2
   stacked: ^3.4.0
   stacked_services: ^1.1.0
 
