@@ -1,4 +1,3 @@
-// models/expense.dart
 class ExpenseModel {
   final int? id;
   final String name;
@@ -40,6 +39,6 @@ class ExpenseModel {
 
   @override
   String toString() {
-    return 'Expense(id: $id, name: $name, category: $category, date: $date, amount: $amount, createdAt: $createdAt)';
+    return 'ExpenseModel(id: $id, name: $name, category: $category, date: $date, amount: $amount, createdAt: $createdAt)';
   }
 }

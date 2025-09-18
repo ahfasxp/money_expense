@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
-import 'package:intl/intl.dart';
 import 'package:money_expense/app/app.locator.dart';
 import 'package:money_expense/app/app.router.dart';
 import 'package:money_expense/models/expense_model.dart';
 import 'package:money_expense/services/expense_service.dart';
+import 'package:money_expense/utils/formatting.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -23,14 +23,14 @@ class HomeViewModel extends BaseViewModel {
   int _monthTotal = 0;
   int get monthTotal => _monthTotal;
 
-  Map<String, int> _categoryTotals = {};
+  final Map<String, int> _categoryTotals = {};
   Map<String, int> get categoryTotals => _categoryTotals;
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  String get todayTotalFormatted => _formatCurrency(_todayTotal);
-  String get monthTotalFormatted => _formatCurrency(_monthTotal);
+  String get todayTotalFormatted => formatCurrency(_todayTotal);
+  String get monthTotalFormatted => formatCurrency(_monthTotal);
 
   void initialise() async {
     await loadData();
@@ -45,20 +45,13 @@ class HomeViewModel extends BaseViewModel {
       _todayExpenses = await _expenseService.getTodayExpenses();
 
       // Load yesterday's expenses
-      final yesterday = DateTime.now().subtract(const Duration(days: 1));
-      final yesterdayString = _formatDateIndonesian(yesterday);
-      _yesterdayExpenses = await _expenseService.getAllExpenses();
-      _yesterdayExpenses = _yesterdayExpenses
-          .where((expense) =>
-              expense.date.contains(yesterdayString.split(',')[1].trim()))
-          .toList();
+      _yesterdayExpenses = await _expenseService.getYesterdayExpenses();
 
       // Load totals
       _todayTotal = await _expenseService.getTodayTotalAmount();
       _monthTotal = await _expenseService.getThisMonthTotalAmount();
 
       // Load category totals
-      _categoryTotals = await _expenseService.getThisMonthCategoryTotals();
     } catch (e) {
       debugPrint('Error loading data: $e');
     } finally {
@@ -67,45 +60,8 @@ class HomeViewModel extends BaseViewModel {
     }
   }
 
-  String _formatCurrency(int amount) {
-    final formatter = NumberFormat('#,###', 'id_ID');
-    return 'Rp. ${formatter.format(amount)}';
-  }
-
-  String _formatDateIndonesian(DateTime date) {
-    final dayNames = [
-      'Minggu',
-      'Senin',
-      'Selasa',
-      'Rabu',
-      'Kamis',
-      'Jumat',
-      'Sabtu'
-    ];
-    final monthNames = [
-      '',
-      'Januari',
-      'Februari',
-      'Maret',
-      'April',
-      'Mei',
-      'Juni',
-      'Juli',
-      'Agustus',
-      'September',
-      'Oktober',
-      'November',
-      'Desember'
-    ];
-
-    final dayName = dayNames[date.weekday % 7];
-    final monthName = monthNames[date.month];
-
-    return '$dayName, ${date.day} $monthName ${date.year}';
-  }
-
   String getFormattedAmount(int amount) {
-    return _formatCurrency(amount);
+    return formatCurrency(amount);
   }
 
   // Get the highest category expense for display

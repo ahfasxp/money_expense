@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:money_expense/models/expense_model.dart';
 import 'package:money_expense/services/database_service.dart';
 
@@ -29,46 +29,6 @@ class ExpenseService {
     }
   }
 
-  // Get all expenses
-  Future<List<ExpenseModel>> getAllExpenses() async {
-    try {
-      return await _databaseService.getAllExpenses();
-    } catch (e) {
-      debugPrint('Error getting all expenses: $e');
-      return [];
-    }
-  }
-
-  // Get today's expenses
-  Future<List<ExpenseModel>> getTodayExpenses() async {
-    try {
-      return await _databaseService.getTodayExpenses();
-    } catch (e) {
-      debugPrint('Error getting today expenses: $e');
-      return [];
-    }
-  }
-
-  // Get this month's expenses
-  Future<List<ExpenseModel>> getThisMonthExpenses() async {
-    try {
-      return await _databaseService.getThisMonthExpenses();
-    } catch (e) {
-      debugPrint('Error getting this month expenses: $e');
-      return [];
-    }
-  }
-
-  // Get expenses by category
-  Future<List<ExpenseModel>> getExpensesByCategory(String category) async {
-    try {
-      return await _databaseService.getExpensesByCategory(category);
-    } catch (e) {
-      debugPrint('Error getting expenses by category: $e');
-      return [];
-    }
-  }
-
   // Get today's total amount
   Future<int> getTodayTotalAmount() async {
     try {
@@ -89,35 +49,43 @@ class ExpenseService {
     }
   }
 
-  // Get category totals for this month
-  Future<Map<String, int>> getThisMonthCategoryTotals() async {
+  // Get all expenses
+  Future<List<ExpenseModel>> getAllExpenses() async {
     try {
-      return await _databaseService.getThisMonthCategoryTotals();
+      return await _databaseService.getAllExpenses();
     } catch (e) {
-      debugPrint('Error getting category totals: $e');
-      return {};
+      debugPrint('Error getting all expenses: $e');
+      return [];
     }
   }
 
-  // Update expense
-  Future<bool> updateExpense(ExpenseModel expense) async {
+  // Get today's expenses
+  Future<List<ExpenseModel>> getTodayExpenses() async {
     try {
-      final result = await _databaseService.updateExpense(expense);
-      return result > 0;
+      return await _databaseService.getTodayExpenses();
     } catch (e) {
-      debugPrint('Error updating expense: $e');
-      return false;
+      debugPrint('Error getting today expenses: $e');
+      return [];
     }
   }
 
-  // Delete expense
-  Future<bool> deleteExpense(int id) async {
+  // Get yesterday's expenses
+  Future<List<ExpenseModel>> getYesterdayExpenses() async {
     try {
-      final result = await _databaseService.deleteExpense(id);
-      return result > 0;
+      return await _databaseService.getYesterdayExpenses();
     } catch (e) {
-      debugPrint('Error deleting expense: $e');
-      return false;
+      debugPrint('Error getting yesterday expenses: $e');
+      return [];
+    }
+  }
+
+  // Get expenses by category
+  Future<List<ExpenseModel>> getExpensesByCategory(String category) async {
+    try {
+      return await _databaseService.getExpensesByCategory(category);
+    } catch (e) {
+      debugPrint('Error getting expenses by category: $e');
+      return [];
     }
   }
 }

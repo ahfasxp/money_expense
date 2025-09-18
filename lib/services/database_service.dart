@@ -76,6 +76,14 @@ class DatabaseService {
     return await getExpensesByDate(todayString);
   }
 
+  // Get yesterday's expenses
+  Future<List<ExpenseModel>> getYesterdayExpenses() async {
+    final yesterday = DateTime.now().subtract(const Duration(days: 1));
+    final yesterdayString =
+        '${yesterday.day} ${_getMonthName(yesterday.month)} ${yesterday.year}';
+    return await getExpensesByDate(yesterdayString);
+  }
+
   // Get this month's expenses
   Future<List<ExpenseModel>> getThisMonthExpenses() async {
     final db = await database;
@@ -109,27 +117,6 @@ class DatabaseService {
     });
   }
 
-  // Update expense
-  Future<int> updateExpense(ExpenseModel expense) async {
-    final db = await database;
-    return await db.update(
-      tableName,
-      expense.toMap(),
-      where: 'id = ?',
-      whereArgs: [expense.id],
-    );
-  }
-
-  // Delete expense
-  Future<int> deleteExpense(int id) async {
-    final db = await database;
-    return await db.delete(
-      tableName,
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-  }
-
   // Get total amount for today
   Future<int> getTodayTotalAmount() async {
     final expenses = await getTodayExpenses();
@@ -148,19 +135,6 @@ class DatabaseService {
       total += expense.amount;
     }
     return total;
-  }
-
-  // Get total amount by category for this month
-  Future<Map<String, int>> getThisMonthCategoryTotals() async {
-    final expenses = await getThisMonthExpenses();
-    final Map<String, int> categoryTotals = {};
-
-    for (final expense in expenses) {
-      categoryTotals[expense.category] =
-          (categoryTotals[expense.category] ?? 0) + expense.amount;
-    }
-
-    return categoryTotals;
   }
 
   String _getMonthName(int month) {

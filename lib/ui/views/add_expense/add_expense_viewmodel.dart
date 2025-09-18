@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:money_expense/app/app.bottomsheets.dart';
 import 'package:money_expense/app/app.locator.dart';
 import 'package:money_expense/enums/category_enum.dart';
 import 'package:money_expense/services/expense_service.dart';
+import 'package:money_expense/utils/formatting.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -51,7 +51,7 @@ class AddExpenseViewModel extends BaseViewModel {
 
     if (numericOnly.isNotEmpty) {
       final numericValue = int.parse(numericOnly);
-      final formattedValue = _formatCurrency(numericValue);
+      final formattedValue = formatCurrency(numericValue);
 
       // Calculate new cursor position
       final newCursorPosition = _calculateCursorPosition(
@@ -101,43 +101,6 @@ class AddExpenseViewModel extends BaseViewModel {
     return newPosition.clamp(0, newText.length);
   }
 
-  String _formatCurrency(int amount) {
-    final formatter = NumberFormat('#,###', 'id_ID');
-    return 'Rp. ${formatter.format(amount)}';
-  }
-
-  String _formatDateIndonesian(DateTime date) {
-    final dayNames = [
-      'Minggu',
-      'Senin',
-      'Selasa',
-      'Rabu',
-      'Kamis',
-      'Jumat',
-      'Sabtu'
-    ];
-    final monthNames = [
-      '',
-      'Januari',
-      'Februari',
-      'Maret',
-      'April',
-      'Mei',
-      'Juni',
-      'Juli',
-      'Agustus',
-      'September',
-      'Oktober',
-      'November',
-      'Desember'
-    ];
-
-    final dayName = dayNames[date.weekday % 7];
-    final monthName = monthNames[date.month];
-
-    return '$dayName, ${date.day} $monthName ${date.year}';
-  }
-
   bool get isFormValid {
     return nameController.text.trim().isNotEmpty &&
         categoryController.text.trim().isNotEmpty &&
@@ -177,7 +140,7 @@ class AddExpenseViewModel extends BaseViewModel {
     );
 
     if (selectedDate != null) {
-      dateController.text = _formatDateIndonesian(selectedDate);
+      dateController.text = formatDateIndonesian(selectedDate);
       rebuildUi();
     }
   }
