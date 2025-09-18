@@ -20,120 +20,162 @@ class HomeView extends StackedView<HomeViewModel> {
           onRefresh: viewModel.refreshData,
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Halo, User!',
-                  style: ktBigTitle.copyWith(color: kcGray1),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Jangan lupa catat keuanganmu setiap hari!',
-                  style: ktParagraphMedium.copyWith(color: kcGray3),
-                ),
-                const SizedBox(height: 20),
-                IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                Padding(
+                  padding: const EdgeInsets.all(20).copyWith(bottom: 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: ExpenseCard(
-                          title: 'Pengeluaranmu hari ini',
-                          amount: viewModel.todayTotalFormatted,
-                          color: kcBlue,
+                      Text(
+                        'Halo, User!',
+                        style: ktBigTitle.copyWith(color: kcGray1),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Jangan lupa catat keuanganmu setiap hari!',
+                        style: ktParagraphMedium.copyWith(color: kcGray3),
+                      ),
+                      const SizedBox(height: 20),
+                      IntrinsicHeight(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                              child: ExpenseCard(
+                                title: 'Pengeluaranmu hari ini',
+                                amount: viewModel.todayTotalFormatted,
+                                color: kcBlue,
+                              ),
+                            ),
+                            const SizedBox(width: 19),
+                            Expanded(
+                              child: ExpenseCard(
+                                title: 'Pengeluaranmu bulan ini',
+                                amount: viewModel.monthTotalFormatted,
+                                color: kcTeal,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(width: 19),
-                      Expanded(
-                        child: ExpenseCard(
-                          title: 'Pengeluaranmu bulan ini',
-                          amount: viewModel.monthTotalFormatted,
-                          color: kcTeal,
-                        ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Pengeluaran berdasarkan kategori',
+                        style: ktParagraphBold.copyWith(color: kcGray1),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
-                Text(
-                  'Pengeluaran berdasarkan kategori',
-                  style: ktParagraphBold.copyWith(color: kcGray1),
-                ),
-                const SizedBox(height: 20),
-                if (viewModel.topCategoryExpense != null)
-                  ExpenseCategoryCard(
-                    title: viewModel.topCategoryExpense!.key,
-                    amount: viewModel.getFormattedAmount(
-                        viewModel.topCategoryExpense!.value),
-                  )
-                else
-                  const ExpenseCategoryCard(
-                    title: 'Belum ada pengeluaran',
-                    amount: 'Rp. 0',
-                  ),
-                const SizedBox(height: 28),
-                Text(
-                  'Hari ini',
-                  style: ktParagraphBold.copyWith(color: kcGray1),
-                ),
-                const SizedBox(height: 20),
-                if (viewModel.todayExpenses.isNotEmpty)
-                  ...viewModel.todayExpenses.map((expense) => Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: ExpenseTile(
-                          title: expense.name,
-                          category: expense.category,
-                          amount: viewModel.getFormattedAmount(expense.amount),
+                // Horizontal ListView for categories
+                SizedBox(
+                  height: 162, // Adjust based on ExpenseCategoryCard height
+                  child: viewModel.categoryTotals.isNotEmpty
+                      ? ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: viewModel.categoryTotals.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(width: 20),
+                          padding: const EdgeInsets.all(20),
+                          itemBuilder: (context, index) {
+                            final entry = viewModel.categoryTotals.entries
+                                .elementAt(index);
+                            return ExpenseCategoryCard(
+                              title: entry.key,
+                              amount: viewModel.getFormattedAmount(entry.value),
+                            );
+                          },
+                        )
+                      : const ExpenseCategoryCard(
+                          title: 'Belum ada pengeluaran',
+                          amount: 'Rp. 0',
                         ),
-                      ))
-                else
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: kcGray5,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Belum ada pengeluaran',
-                        style: ktParagraphMedium.copyWith(color: kcGray3),
-                      ),
-                    ),
-                  ),
-                const SizedBox(height: 28),
-                Text(
-                  'Kemarin',
-                  style: ktParagraphBold.copyWith(color: kcGray1),
                 ),
-                const SizedBox(height: 20),
-                if (viewModel.yesterdayExpenses.isNotEmpty)
-                  ...viewModel.yesterdayExpenses
-                      .take(3)
-                      .map((expense) => Padding(
-                            padding: const EdgeInsets.only(bottom: 16),
-                            child: ExpenseTile(
-                              title: expense.name,
-                              category: expense.category,
-                              amount:
-                                  viewModel.getFormattedAmount(expense.amount),
-                            ),
-                          ))
-                else
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: kcGray5,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Belum ada pengeluaran',
-                        style: ktParagraphMedium.copyWith(color: kcGray3),
+                Padding(
+                  padding: const EdgeInsets.all(20).copyWith(top: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Hari ini',
+                        style: ktParagraphBold.copyWith(color: kcGray1),
                       ),
-                    ),
+                      const SizedBox(height: 20),
+                      // ListView for today's expenses
+                      viewModel.todayExpenses.isNotEmpty
+                          ? ListView.separated(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: viewModel.todayExpenses.length,
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(height: 20),
+                              itemBuilder: (context, index) {
+                                final expense = viewModel.todayExpenses[index];
+                                return ExpenseTile(
+                                  title: expense.name,
+                                  category: expense.category,
+                                  amount: viewModel
+                                      .getFormattedAmount(expense.amount),
+                                );
+                              },
+                            )
+                          : Container(
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: kcGray5,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Belum ada pengeluaran',
+                                  style: ktParagraphMedium.copyWith(
+                                      color: kcGray3),
+                                ),
+                              ),
+                            ),
+                      const SizedBox(height: 28),
+                      Text(
+                        'Kemarin',
+                        style: ktParagraphBold.copyWith(color: kcGray1),
+                      ),
+                      const SizedBox(height: 20),
+                      // ListView for yesterday's expenses (max 3 items)
+                      viewModel.yesterdayExpenses.isNotEmpty
+                          ? ListView.separated(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: viewModel.yesterdayExpenses.length,
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(height: 20),
+                              itemBuilder: (context, index) {
+                                final expense =
+                                    viewModel.yesterdayExpenses[index];
+                                return ExpenseTile(
+                                  title: expense.name,
+                                  category: expense.category,
+                                  amount: viewModel
+                                      .getFormattedAmount(expense.amount),
+                                );
+                              },
+                            )
+                          : Container(
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: kcGray5,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Belum ada pengeluaran',
+                                  style: ktParagraphMedium.copyWith(
+                                      color: kcGray3),
+                                ),
+                              ),
+                            ),
+                    ],
                   ),
+                ),
               ],
             ),
           ),

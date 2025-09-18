@@ -23,7 +23,7 @@ class HomeViewModel extends BaseViewModel {
   int _monthTotal = 0;
   int get monthTotal => _monthTotal;
 
-  final Map<String, int> _categoryTotals = {};
+  Map<String, int> _categoryTotals = {};
   Map<String, int> get categoryTotals => _categoryTotals;
 
   bool _isLoading = false;
@@ -52,6 +52,7 @@ class HomeViewModel extends BaseViewModel {
       _monthTotal = await _expenseService.getThisMonthTotalAmount();
 
       // Load category totals
+      _categoryTotals = await _expenseService.getCategoryTotals();
     } catch (e) {
       debugPrint('Error loading data: $e');
     } finally {

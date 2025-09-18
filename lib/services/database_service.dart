@@ -1,4 +1,5 @@
 import 'package:money_expense/models/expense_model.dart';
+import 'package:money_expense/utils/formatting.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -68,23 +69,21 @@ class DatabaseService {
     });
   }
 
-  // Get today's expenses
+  // Get today's expenses - menggunakan formatDateIndonesian untuk konsistensi
   Future<List<ExpenseModel>> getTodayExpenses() async {
     final today = DateTime.now();
-    final todayString =
-        '${today.day} ${_getMonthName(today.month)} ${today.year}';
+    final todayString = formatDateIndonesian(today);
     return await getExpensesByDate(todayString);
   }
 
-  // Get yesterday's expenses
+  // Get yesterday's expenses - menggunakan formatDateIndonesian untuk konsistensi
   Future<List<ExpenseModel>> getYesterdayExpenses() async {
     final yesterday = DateTime.now().subtract(const Duration(days: 1));
-    final yesterdayString =
-        '${yesterday.day} ${_getMonthName(yesterday.month)} ${yesterday.year}';
+    final yesterdayString = formatDateIndonesian(yesterday);
     return await getExpensesByDate(yesterdayString);
   }
 
-  // Get this month's expenses
+  // Get this month's expenses - menggunakan pattern matching yang lebih akurat
   Future<List<ExpenseModel>> getThisMonthExpenses() async {
     final db = await database;
     final now = DateTime.now();
@@ -102,39 +101,33 @@ class DatabaseService {
     });
   }
 
-  // Get expenses by category
-  Future<List<ExpenseModel>> getExpensesByCategory(String category) async {
-    final db = await database;
-    final List<Map<String, dynamic>> maps = await db.query(
-      tableName,
-      where: 'category = ?',
-      whereArgs: [category],
-      orderBy: 'created_at DESC',
-    );
-
-    return List.generate(maps.length, (i) {
-      return ExpenseModel.fromMap(maps[i]);
-    });
-  }
-
   // Get total amount for today
   Future<int> getTodayTotalAmount() async {
     final expenses = await getTodayExpenses();
-    int total = 0;
-    for (final expense in expenses) {
-      total += expense.amount;
-    }
-    return total;
+    return expenses.fold<int>(0, (sum, expense) => sum + expense.amount);
   }
 
   // Get total amount for this month
   Future<int> getThisMonthTotalAmount() async {
     final expenses = await getThisMonthExpenses();
-    int total = 0;
-    for (final expense in expenses) {
-      total += expense.amount;
+    return expenses.fold<int>(0, (sum, expense) => sum + expense.amount);
+  }
+
+  // Get category totals - returns Map<String, int>
+  Future<Map<String, int>> getCategoryTotals() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.rawQuery('''
+      SELECT category, SUM(amount) as total
+      FROM $tableName
+      GROUP BY category
+      ORDER BY total DESC
+    ''');
+
+    final Map<String, int> categoryTotals = {};
+    for (final map in maps) {
+      categoryTotals[map['category'] as String] = map['total'] as int;
     }
-    return total;
+    return categoryTotals;
   }
 
   String _getMonthName(int month) {
