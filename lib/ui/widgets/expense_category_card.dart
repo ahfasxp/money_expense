@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:money_expense/enums/category_enum.dart';
 import 'package:money_expense/ui/common/app_colors.dart';
 import 'package:money_expense/ui/common/app_texts.dart';
 
 class ExpenseCategoryCard extends StatelessWidget {
-  final String icon;
-  final Color iconColor;
   final String title;
   final String amount;
 
   const ExpenseCategoryCard({
     super.key,
-    required this.icon,
-    required this.iconColor,
     required this.title,
     required this.amount,
   });
 
   @override
   Widget build(BuildContext context) {
+    final categoryEnum = CategoryEnum.fromString(title);
+
     return Container(
       width: 120,
       padding: const EdgeInsets.all(16),
@@ -42,11 +41,11 @@ class ExpenseCategoryCard extends StatelessWidget {
             height: 36,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(100),
-              color: iconColor,
+              color: categoryEnum?.color,
             ),
             child: Center(
               child: SvgPicture.asset(
-                icon,
+                categoryEnum?.iconPath ?? CategoryEnum.food.iconPath,
                 width: 20,
                 height: 20,
               ),

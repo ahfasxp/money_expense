@@ -129,5 +129,6 @@ class AddExpenseView extends StackedView<AddExpenseViewModel> {
       AddExpenseViewModel();
 
   @override
-  void onViewModelReady(AddExpenseViewModel viewModel) => viewModel.init();
+  void onViewModelReady(AddExpenseViewModel viewModel) =>
+      viewModel.initialise();
 }

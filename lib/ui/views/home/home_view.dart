@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:money_expense/ui/common/app_colors.dart';
-import 'package:money_expense/ui/common/app_svgs.dart';
 import 'package:money_expense/ui/common/app_texts.dart';
 import 'package:money_expense/ui/widgets/expense_card.dart';
 import 'package:money_expense/ui/widgets/expense_category_card.dart';
@@ -17,96 +16,126 @@ class HomeView extends StackedView<HomeViewModel> {
     return Scaffold(
       backgroundColor: kcWhite,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Halo, User!',
-                style: ktBigTitle.copyWith(color: kcGray1),
-              ),
-              const SizedBox(
-                height: 4,
-              ),
-              Text(
-                'Jangan lupa catat keuanganmu setiap hari!',
-                style: ktParagraphMedium.copyWith(color: kcGray3),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                      child: ExpenseCard(
-                        title: 'Pengeluaranmu hari ini',
-                        amount: 'Rp. 30.000',
-                        color: kcBlue,
-                      ),
-                    ),
-                    SizedBox(width: 19),
-                    Expanded(
-                      child: ExpenseCard(
-                        title: 'Pengeluaranmu bulan ini',
-                        amount: 'Rp. 30.000',
-                        color: kcTeal,
-                      ),
-                    ),
-                  ],
+        child: RefreshIndicator(
+          onRefresh: viewModel.refreshData,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Halo, User!',
+                  style: ktBigTitle.copyWith(color: kcGray1),
                 ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                'Pengeluaran berdasarkan kategori',
-                style: ktParagraphBold.copyWith(color: kcGray1),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const ExpenseCategoryCard(
-                icon: AppSvgs.food,
-                iconColor: kcBlue,
-                title: 'Makanan',
-                amount: 'Rp. 20.000',
-              ),
-              const SizedBox(
-                height: 28,
-              ),
-              Text(
-                'Hari ini',
-                style: ktParagraphBold.copyWith(color: kcGray1),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const ExpenseTile(
-                icon: AppSvgs.food,
-                iconColor: kcYellow,
-                title: 'Ayam Geprek',
-                amount: 'Rp. 15.000',
-              ),
-              const SizedBox(
-                height: 28,
-              ),
-              Text(
-                'Kemarin',
-                style: ktParagraphBold.copyWith(color: kcGray1),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const ExpenseTile(
-                icon: AppSvgs.internet,
-                iconColor: kcBlue,
-                title: 'Ojek Online',
-                amount: 'Rp. 15.000',
-              ),
-            ],
+                const SizedBox(height: 4),
+                Text(
+                  'Jangan lupa catat keuanganmu setiap hari!',
+                  style: ktParagraphMedium.copyWith(color: kcGray3),
+                ),
+                const SizedBox(height: 20),
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        child: ExpenseCard(
+                          title: 'Pengeluaranmu hari ini',
+                          amount: viewModel.todayTotalFormatted,
+                          color: kcBlue,
+                        ),
+                      ),
+                      const SizedBox(width: 19),
+                      Expanded(
+                        child: ExpenseCard(
+                          title: 'Pengeluaranmu bulan ini',
+                          amount: viewModel.monthTotalFormatted,
+                          color: kcTeal,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Pengeluaran berdasarkan kategori',
+                  style: ktParagraphBold.copyWith(color: kcGray1),
+                ),
+                const SizedBox(height: 20),
+                if (viewModel.topCategoryExpense != null)
+                  ExpenseCategoryCard(
+                    title: viewModel.topCategoryExpense!.key,
+                    amount: viewModel.getFormattedAmount(
+                        viewModel.topCategoryExpense!.value),
+                  )
+                else
+                  const ExpenseCategoryCard(
+                    title: 'Belum ada pengeluaran',
+                    amount: 'Rp. 0',
+                  ),
+                const SizedBox(height: 28),
+                Text(
+                  'Hari ini',
+                  style: ktParagraphBold.copyWith(color: kcGray1),
+                ),
+                const SizedBox(height: 20),
+                if (viewModel.todayExpenses.isNotEmpty)
+                  ...viewModel.todayExpenses.map((expense) => Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: ExpenseTile(
+                          title: expense.name,
+                          category: expense.category,
+                          amount: viewModel.getFormattedAmount(expense.amount),
+                        ),
+                      ))
+                else
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: kcGray5,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Belum ada pengeluaran',
+                        style: ktParagraphMedium.copyWith(color: kcGray3),
+                      ),
+                    ),
+                  ),
+                const SizedBox(height: 28),
+                Text(
+                  'Kemarin',
+                  style: ktParagraphBold.copyWith(color: kcGray1),
+                ),
+                const SizedBox(height: 20),
+                if (viewModel.yesterdayExpenses.isNotEmpty)
+                  ...viewModel.yesterdayExpenses
+                      .take(3)
+                      .map((expense) => Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: ExpenseTile(
+                              title: expense.name,
+                              category: expense.category,
+                              amount:
+                                  viewModel.getFormattedAmount(expense.amount),
+                            ),
+                          ))
+                else
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: kcGray5,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Belum ada pengeluaran',
+                        style: ktParagraphMedium.copyWith(color: kcGray3),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -139,4 +168,7 @@ class HomeView extends StackedView<HomeViewModel> {
 
   @override
   HomeViewModel viewModelBuilder(BuildContext context) => HomeViewModel();
+
+  @override
+  void onViewModelReady(HomeViewModel viewModel) => viewModel.initialise();
 }

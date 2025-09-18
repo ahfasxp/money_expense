@@ -1,3 +1,5 @@
+import 'package:money_expense/services/database_service.dart';
+import 'package:money_expense/services/expense_service.dart';
 import 'package:money_expense/ui/bottom_sheets/category/category_sheet.dart';
 import 'package:money_expense/ui/views/add_expense/add_expense_view.dart';
 import 'package:money_expense/ui/views/home/home_view.dart';
@@ -14,7 +16,10 @@ import 'package:stacked_services/stacked_services.dart';
   dependencies: [
     LazySingleton(classType: BottomSheetService),
     LazySingleton(classType: NavigationService),
-    // @stacked-service
+    LazySingleton(classType: ExpenseService),
+    LazySingleton(classType: DatabaseService),
+    LazySingleton(classType: SnackbarService),
+// @stacked-service
   ],
   bottomsheets: [
     StackedBottomsheet(classType: CategorySheet),

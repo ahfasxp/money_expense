@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:money_expense/app/app.bottomsheets.dart';
 import 'package:money_expense/app/app.locator.dart';
-import 'package:money_expense/enum/category_enum.dart';
+import 'package:money_expense/enums/category_enum.dart';
+import 'package:money_expense/services/expense_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 class AddExpenseViewModel extends BaseViewModel {
   final _navigationService = locator<NavigationService>();
   final _bottomSheetService = locator<BottomSheetService>();
+  final _snackbarService = locator<SnackbarService>();
+  final _expenseService = locator<ExpenseService>();
 
   final nameController = TextEditingController();
   final categoryController = TextEditingController();
@@ -18,7 +21,10 @@ class AddExpenseViewModel extends BaseViewModel {
   CategoryEnum? _selectedCategory = CategoryEnum.food;
   CategoryEnum? get selectedCategory => _selectedCategory;
 
-  void init() {
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
+  void initialise() {
     // Set initial category value
     categoryController.text = _selectedCategory?.label ?? '';
     _setupListeners();
@@ -136,7 +142,8 @@ class AddExpenseViewModel extends BaseViewModel {
     return nameController.text.trim().isNotEmpty &&
         categoryController.text.trim().isNotEmpty &&
         dateController.text.trim().isNotEmpty &&
-        amountController.text.trim().isNotEmpty;
+        amountController.text.trim().isNotEmpty &&
+        !_isLoading;
   }
 
   void back() {
@@ -175,17 +182,59 @@ class AddExpenseViewModel extends BaseViewModel {
     }
   }
 
-  void saveExpense() {
-    if (isFormValid) {
-      // Implementasi save expense
-      print('Saving expense...');
-      print('Name: ${nameController.text}');
-      print('Category: ${_selectedCategory?.label}');
-      print('Date: ${dateController.text}');
-      print('Amount: ${amountController.text}');
+  int _parseAmount(String amountText) {
+    // Remove "Rp. " and any non-digit characters, then parse
+    final numericOnly = amountText.replaceAll(RegExp(r'[^0-9]'), '');
+    return numericOnly.isNotEmpty ? int.parse(numericOnly) : 0;
+  }
 
-      // Navigate back or show success message
-      back();
+  Future<void> saveExpense() async {
+    if (!isFormValid) return;
+
+    _isLoading = true;
+    rebuildUi();
+
+    try {
+      final amount = _parseAmount(amountController.text);
+
+      final success = await _expenseService.addExpense(
+        name: nameController.text.trim(),
+        category: _selectedCategory?.label ?? '',
+        date: dateController.text.trim(),
+        amount: amount,
+      );
+
+      if (success) {
+        _snackbarService.showCustomSnackBar(
+          variant: 'success',
+          message: 'Pengeluaran berhasil disimpan!',
+        );
+
+        // Clear form
+        nameController.clear();
+        categoryController.clear();
+        dateController.clear();
+        amountController.clear();
+        _selectedCategory = CategoryEnum.food;
+        categoryController.text = _selectedCategory?.label ?? '';
+
+        // Navigate back
+        back();
+      } else {
+        _snackbarService.showCustomSnackBar(
+          variant: 'error',
+          message: 'Gagal menyimpan pengeluaran. Silakan coba lagi.',
+        );
+      }
+    } catch (e) {
+      debugPrint('Error saving expense: $e');
+      _snackbarService.showCustomSnackBar(
+        variant: 'error',
+        message: 'Terjadi kesalahan. Silakan coba lagi.',
+      );
+    } finally {
+      _isLoading = false;
+      rebuildUi();
     }
   }
 
