@@ -18,7 +18,7 @@ class HomeView extends StackedView<HomeViewModel> {
       backgroundColor: kcWhite,
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: viewModel.refreshData,
+          onRefresh: viewModel.loadData,
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             child: Column(

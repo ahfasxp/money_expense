@@ -83,8 +83,4 @@ class HomeViewModel extends BaseViewModel {
       await loadData();
     }
   }
-
-  Future<void> refreshData() async {
-    await loadData();
-  }
 }
