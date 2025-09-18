@@ -60,6 +60,8 @@ class ExpenseCategoryCard extends StatelessWidget {
           Text(
             amount,
             style: ktCaptionBold.copyWith(color: kcGray1),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           )
         ],
       ),

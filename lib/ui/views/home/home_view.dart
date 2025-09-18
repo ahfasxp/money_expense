@@ -73,32 +73,32 @@ class HomeView extends StackedView<HomeViewModel> {
                   ),
                 ),
                 // Horizontal ListView for categories with shimmer
-                SizedBox(
-                  height: 162,
-                  child: viewModel.isLoading
-                      ? _buildCategoryListShimmer()
-                      : viewModel.categoryTotals.isNotEmpty
-                          ? ListView.separated(
+                viewModel.isLoading
+                    ? _buildCategoryListShimmer()
+                    : viewModel.categoryTotals.isNotEmpty
+                        ? IntrinsicHeight(
+                            child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
-                              itemCount: viewModel.categoryTotals.length,
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(width: 20),
                               padding: const EdgeInsets.all(20),
-                              itemBuilder: (context, index) {
-                                final entry = viewModel.categoryTotals.entries
-                                    .elementAt(index);
-                                return ExpenseCategoryCard(
-                                  title: entry.key,
-                                  amount:
-                                      viewModel.getFormattedAmount(entry.value),
-                                );
-                              },
-                            )
-                          : Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: notFound(),
+                              child: Row(
+                                children: viewModel.categoryTotals.entries
+                                    .map((entry) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(right: 20),
+                                    child: ExpenseCategoryCard(
+                                      title: entry.key,
+                                      amount: viewModel
+                                          .getFormattedAmount(entry.value),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
                             ),
-                ),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: notFound(),
+                          ),
                 Padding(
                   padding: const EdgeInsets.all(20).copyWith(top: 8),
                   child: Column(

@@ -55,14 +55,23 @@ class ExpenseTile extends StatelessWidget {
             child: Text(
               title,
               style: ktParagraphMedium.copyWith(color: kcGray1),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
           const SizedBox(
             width: 12,
           ),
-          Text(
-            amount,
-            style: ktParagraphSemiBold.copyWith(color: kcGray1),
+          ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 100,
+            ),
+            child: Text(
+              amount,
+              style: ktParagraphSemiBold.copyWith(color: kcGray1),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),

@@ -48,6 +48,8 @@ class ExpenseCard extends StatelessWidget {
           Text(
             amount,
             style: ktBigTitle.copyWith(color: kcWhite),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
