@@ -4,6 +4,7 @@ import 'package:money_expense/ui/common/app_texts.dart';
 import 'package:money_expense/ui/widgets/expense_card.dart';
 import 'package:money_expense/ui/widgets/expense_category_card.dart';
 import 'package:money_expense/ui/widgets/expense_tile.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:stacked/stacked.dart';
 
 import 'home_viewmodel.dart';
@@ -38,6 +39,7 @@ class HomeView extends StackedView<HomeViewModel> {
                         style: ktParagraphMedium.copyWith(color: kcGray3),
                       ),
                       const SizedBox(height: 20),
+                      // Expense Cards with shimmer
                       IntrinsicHeight(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -47,6 +49,7 @@ class HomeView extends StackedView<HomeViewModel> {
                                 title: 'Pengeluaranmu hari ini',
                                 amount: viewModel.todayTotalFormatted,
                                 color: kcBlue,
+                                isLoading: viewModel.isLoading,
                               ),
                             ),
                             const SizedBox(width: 19),
@@ -55,6 +58,7 @@ class HomeView extends StackedView<HomeViewModel> {
                                 title: 'Pengeluaranmu bulan ini',
                                 amount: viewModel.monthTotalFormatted,
                                 color: kcTeal,
+                                isLoading: viewModel.isLoading,
                               ),
                             ),
                           ],
@@ -68,29 +72,35 @@ class HomeView extends StackedView<HomeViewModel> {
                     ],
                   ),
                 ),
-                // Horizontal ListView for categories
+                // Horizontal ListView for categories with shimmer
                 SizedBox(
-                  height: 162, // Adjust based on ExpenseCategoryCard height
-                  child: viewModel.categoryTotals.isNotEmpty
-                      ? ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: viewModel.categoryTotals.length,
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(width: 20),
-                          padding: const EdgeInsets.all(20),
-                          itemBuilder: (context, index) {
-                            final entry = viewModel.categoryTotals.entries
-                                .elementAt(index);
-                            return ExpenseCategoryCard(
-                              title: entry.key,
-                              amount: viewModel.getFormattedAmount(entry.value),
-                            );
-                          },
-                        )
-                      : const ExpenseCategoryCard(
-                          title: 'Belum ada pengeluaran',
-                          amount: 'Rp. 0',
-                        ),
+                  height: 162,
+                  child: viewModel.isLoading
+                      ? _buildCategoryListShimmer()
+                      : viewModel.categoryTotals.isNotEmpty
+                          ? ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: viewModel.categoryTotals.length,
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(width: 20),
+                              padding: const EdgeInsets.all(20),
+                              itemBuilder: (context, index) {
+                                final entry = viewModel.categoryTotals.entries
+                                    .elementAt(index);
+                                return ExpenseCategoryCard(
+                                  title: entry.key,
+                                  amount:
+                                      viewModel.getFormattedAmount(entry.value),
+                                );
+                              },
+                            )
+                          : const Padding(
+                              padding: EdgeInsets.all(20),
+                              child: ExpenseCategoryCard(
+                                title: 'Belum ada pengeluaran',
+                                amount: 'Rp. 0',
+                              ),
+                            ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(20).copyWith(top: 8),
@@ -102,77 +112,82 @@ class HomeView extends StackedView<HomeViewModel> {
                         style: ktParagraphBold.copyWith(color: kcGray1),
                       ),
                       const SizedBox(height: 20),
-                      // ListView for today's expenses
-                      viewModel.todayExpenses.isNotEmpty
-                          ? ListView.separated(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: viewModel.todayExpenses.length,
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(height: 20),
-                              itemBuilder: (context, index) {
-                                final expense = viewModel.todayExpenses[index];
-                                return ExpenseTile(
-                                  title: expense.name,
-                                  category: expense.category,
-                                  amount: viewModel
-                                      .getFormattedAmount(expense.amount),
-                                );
-                              },
-                            )
-                          : Container(
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                color: kcGray5,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Belum ada pengeluaran',
-                                  style: ktParagraphMedium.copyWith(
-                                      color: kcGray3),
+                      // Today's expenses with shimmer
+                      viewModel.isLoading
+                          ? _buildExpenseListShimmer(3)
+                          : viewModel.todayExpenses.isNotEmpty
+                              ? ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: viewModel.todayExpenses.length,
+                                  separatorBuilder: (context, index) =>
+                                      const SizedBox(height: 20),
+                                  itemBuilder: (context, index) {
+                                    final expense =
+                                        viewModel.todayExpenses[index];
+                                    return ExpenseTile(
+                                      title: expense.name,
+                                      category: expense.category,
+                                      amount: viewModel
+                                          .getFormattedAmount(expense.amount),
+                                    );
+                                  },
+                                )
+                              : Container(
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    color: kcGray5,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      'Belum ada pengeluaran',
+                                      style: ktParagraphMedium.copyWith(
+                                          color: kcGray3),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
                       const SizedBox(height: 28),
                       Text(
                         'Kemarin',
                         style: ktParagraphBold.copyWith(color: kcGray1),
                       ),
                       const SizedBox(height: 20),
-                      // ListView for yesterday's expenses (max 3 items)
-                      viewModel.yesterdayExpenses.isNotEmpty
-                          ? ListView.separated(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: viewModel.yesterdayExpenses.length,
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(height: 20),
-                              itemBuilder: (context, index) {
-                                final expense =
-                                    viewModel.yesterdayExpenses[index];
-                                return ExpenseTile(
-                                  title: expense.name,
-                                  category: expense.category,
-                                  amount: viewModel
-                                      .getFormattedAmount(expense.amount),
-                                );
-                              },
-                            )
-                          : Container(
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                color: kcGray5,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Belum ada pengeluaran',
-                                  style: ktParagraphMedium.copyWith(
-                                      color: kcGray3),
+                      // Yesterday's expenses with shimmer
+                      viewModel.isLoading
+                          ? _buildExpenseListShimmer(2)
+                          : viewModel.yesterdayExpenses.isNotEmpty
+                              ? ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: viewModel.yesterdayExpenses.length,
+                                  separatorBuilder: (context, index) =>
+                                      const SizedBox(height: 20),
+                                  itemBuilder: (context, index) {
+                                    final expense =
+                                        viewModel.yesterdayExpenses[index];
+                                    return ExpenseTile(
+                                      title: expense.name,
+                                      category: expense.category,
+                                      amount: viewModel
+                                          .getFormattedAmount(expense.amount),
+                                    );
+                                  },
+                                )
+                              : Container(
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    color: kcGray5,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      'Belum ada pengeluaran',
+                                      style: ktParagraphMedium.copyWith(
+                                          color: kcGray3),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
                     ],
                   ),
                 ),
@@ -191,10 +206,10 @@ class HomeView extends StackedView<HomeViewModel> {
             color: kcBlue,
             boxShadow: const [
               BoxShadow(
-                color: Color(0x0A000000), // hitam 3.9% opacity
-                offset: Offset(0, 4), // x=0, y=4
-                blurRadius: 8, // blur
-                spreadRadius: 4, // spread
+                color: Color(0x0A000000),
+                offset: Offset(0, 4),
+                blurRadius: 8,
+                spreadRadius: 4,
               ),
             ],
           ),
@@ -205,6 +220,127 @@ class HomeView extends StackedView<HomeViewModel> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildCategoryListShimmer() {
+    return ListView.separated(
+      scrollDirection: Axis.horizontal,
+      itemCount: 3,
+      separatorBuilder: (context, index) => const SizedBox(width: 20),
+      padding: const EdgeInsets.all(20),
+      itemBuilder: (context, index) {
+        return Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: Container(
+            width: 120,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  width: double.infinity,
+                  height: 14,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  width: 80,
+                  height: 16,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildExpenseListShimmer(int itemCount) {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: itemCount,
+      separatorBuilder: (context, index) => const SizedBox(height: 20),
+      itemBuilder: (context, index) {
+        return Shimmer.fromColors(
+          baseColor: Colors.grey[300]!,
+          highlightColor: Colors.grey[100]!,
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        height: 16,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Container(
+                        width: 80,
+                        height: 14,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 80,
+                  height: 16,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
