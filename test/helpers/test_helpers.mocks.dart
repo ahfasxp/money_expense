@@ -724,56 +724,6 @@ class MockExpenseService extends _i1.Mock implements _i8.ExpenseService {
       ) as _i6.Future<bool>);
 
   @override
-  _i6.Future<List<_i9.ExpenseModel>> getAllExpenses() => (super.noSuchMethod(
-        Invocation.method(
-          #getAllExpenses,
-          [],
-        ),
-        returnValue:
-            _i6.Future<List<_i9.ExpenseModel>>.value(<_i9.ExpenseModel>[]),
-        returnValueForMissingStub:
-            _i6.Future<List<_i9.ExpenseModel>>.value(<_i9.ExpenseModel>[]),
-      ) as _i6.Future<List<_i9.ExpenseModel>>);
-
-  @override
-  _i6.Future<List<_i9.ExpenseModel>> getTodayExpenses() => (super.noSuchMethod(
-        Invocation.method(
-          #getTodayExpenses,
-          [],
-        ),
-        returnValue:
-            _i6.Future<List<_i9.ExpenseModel>>.value(<_i9.ExpenseModel>[]),
-        returnValueForMissingStub:
-            _i6.Future<List<_i9.ExpenseModel>>.value(<_i9.ExpenseModel>[]),
-      ) as _i6.Future<List<_i9.ExpenseModel>>);
-
-  @override
-  _i6.Future<List<_i9.ExpenseModel>> getThisMonthExpenses() =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #getThisMonthExpenses,
-          [],
-        ),
-        returnValue:
-            _i6.Future<List<_i9.ExpenseModel>>.value(<_i9.ExpenseModel>[]),
-        returnValueForMissingStub:
-            _i6.Future<List<_i9.ExpenseModel>>.value(<_i9.ExpenseModel>[]),
-      ) as _i6.Future<List<_i9.ExpenseModel>>);
-
-  @override
-  _i6.Future<List<_i9.ExpenseModel>> getExpensesByCategory(String? category) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #getExpensesByCategory,
-          [category],
-        ),
-        returnValue:
-            _i6.Future<List<_i9.ExpenseModel>>.value(<_i9.ExpenseModel>[]),
-        returnValueForMissingStub:
-            _i6.Future<List<_i9.ExpenseModel>>.value(<_i9.ExpenseModel>[]),
-      ) as _i6.Future<List<_i9.ExpenseModel>>);
-
-  @override
   _i6.Future<int> getTodayTotalAmount() => (super.noSuchMethod(
         Invocation.method(
           #getTodayTotalAmount,
@@ -794,37 +744,40 @@ class MockExpenseService extends _i1.Mock implements _i8.ExpenseService {
       ) as _i6.Future<int>);
 
   @override
-  _i6.Future<Map<String, int>> getThisMonthCategoryTotals() =>
+  _i6.Future<List<_i9.ExpenseModel>> getTodayExpenses() => (super.noSuchMethod(
+        Invocation.method(
+          #getTodayExpenses,
+          [],
+        ),
+        returnValue:
+            _i6.Future<List<_i9.ExpenseModel>>.value(<_i9.ExpenseModel>[]),
+        returnValueForMissingStub:
+            _i6.Future<List<_i9.ExpenseModel>>.value(<_i9.ExpenseModel>[]),
+      ) as _i6.Future<List<_i9.ExpenseModel>>);
+
+  @override
+  _i6.Future<List<_i9.ExpenseModel>> getYesterdayExpenses() =>
       (super.noSuchMethod(
         Invocation.method(
-          #getThisMonthCategoryTotals,
+          #getYesterdayExpenses,
+          [],
+        ),
+        returnValue:
+            _i6.Future<List<_i9.ExpenseModel>>.value(<_i9.ExpenseModel>[]),
+        returnValueForMissingStub:
+            _i6.Future<List<_i9.ExpenseModel>>.value(<_i9.ExpenseModel>[]),
+      ) as _i6.Future<List<_i9.ExpenseModel>>);
+
+  @override
+  _i6.Future<Map<String, int>> getCategoryTotals() => (super.noSuchMethod(
+        Invocation.method(
+          #getCategoryTotals,
           [],
         ),
         returnValue: _i6.Future<Map<String, int>>.value(<String, int>{}),
         returnValueForMissingStub:
             _i6.Future<Map<String, int>>.value(<String, int>{}),
       ) as _i6.Future<Map<String, int>>);
-
-  @override
-  _i6.Future<bool> updateExpense(_i9.ExpenseModel? expense) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #updateExpense,
-          [expense],
-        ),
-        returnValue: _i6.Future<bool>.value(false),
-        returnValueForMissingStub: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
-
-  @override
-  _i6.Future<bool> deleteExpense(int? id) => (super.noSuchMethod(
-        Invocation.method(
-          #deleteExpense,
-          [id],
-        ),
-        returnValue: _i6.Future<bool>.value(false),
-        returnValueForMissingStub: _i6.Future<bool>.value(false),
-      ) as _i6.Future<bool>);
 }
 
 /// A class which mocks [DatabaseService].
@@ -894,6 +847,19 @@ class MockDatabaseService extends _i1.Mock implements _i10.DatabaseService {
       ) as _i6.Future<List<_i9.ExpenseModel>>);
 
   @override
+  _i6.Future<List<_i9.ExpenseModel>> getYesterdayExpenses() =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getYesterdayExpenses,
+          [],
+        ),
+        returnValue:
+            _i6.Future<List<_i9.ExpenseModel>>.value(<_i9.ExpenseModel>[]),
+        returnValueForMissingStub:
+            _i6.Future<List<_i9.ExpenseModel>>.value(<_i9.ExpenseModel>[]),
+      ) as _i6.Future<List<_i9.ExpenseModel>>);
+
+  @override
   _i6.Future<List<_i9.ExpenseModel>> getThisMonthExpenses() =>
       (super.noSuchMethod(
         Invocation.method(
@@ -905,40 +871,6 @@ class MockDatabaseService extends _i1.Mock implements _i10.DatabaseService {
         returnValueForMissingStub:
             _i6.Future<List<_i9.ExpenseModel>>.value(<_i9.ExpenseModel>[]),
       ) as _i6.Future<List<_i9.ExpenseModel>>);
-
-  @override
-  _i6.Future<List<_i9.ExpenseModel>> getExpensesByCategory(String? category) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #getExpensesByCategory,
-          [category],
-        ),
-        returnValue:
-            _i6.Future<List<_i9.ExpenseModel>>.value(<_i9.ExpenseModel>[]),
-        returnValueForMissingStub:
-            _i6.Future<List<_i9.ExpenseModel>>.value(<_i9.ExpenseModel>[]),
-      ) as _i6.Future<List<_i9.ExpenseModel>>);
-
-  @override
-  _i6.Future<int> updateExpense(_i9.ExpenseModel? expense) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #updateExpense,
-          [expense],
-        ),
-        returnValue: _i6.Future<int>.value(0),
-        returnValueForMissingStub: _i6.Future<int>.value(0),
-      ) as _i6.Future<int>);
-
-  @override
-  _i6.Future<int> deleteExpense(int? id) => (super.noSuchMethod(
-        Invocation.method(
-          #deleteExpense,
-          [id],
-        ),
-        returnValue: _i6.Future<int>.value(0),
-        returnValueForMissingStub: _i6.Future<int>.value(0),
-      ) as _i6.Future<int>);
 
   @override
   _i6.Future<int> getTodayTotalAmount() => (super.noSuchMethod(
@@ -961,10 +893,9 @@ class MockDatabaseService extends _i1.Mock implements _i10.DatabaseService {
       ) as _i6.Future<int>);
 
   @override
-  _i6.Future<Map<String, int>> getThisMonthCategoryTotals() =>
-      (super.noSuchMethod(
+  _i6.Future<Map<String, int>> getCategoryTotals() => (super.noSuchMethod(
         Invocation.method(
-          #getThisMonthCategoryTotals,
+          #getCategoryTotals,
           [],
         ),
         returnValue: _i6.Future<Map<String, int>>.value(<String, int>{}),
