@@ -94,12 +94,9 @@ class HomeView extends StackedView<HomeViewModel> {
                                 );
                               },
                             )
-                          : const Padding(
-                              padding: EdgeInsets.all(20),
-                              child: ExpenseCategoryCard(
-                                title: 'Belum ada pengeluaran',
-                                amount: 'Rp. 0',
-                              ),
+                          : Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: notFound(),
                             ),
                 ),
                 Padding(
@@ -133,20 +130,7 @@ class HomeView extends StackedView<HomeViewModel> {
                                     );
                                   },
                                 )
-                              : Container(
-                                  padding: const EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
-                                    color: kcGray5,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      'Belum ada pengeluaran',
-                                      style: ktParagraphMedium.copyWith(
-                                          color: kcGray3),
-                                    ),
-                                  ),
-                                ),
+                              : notFound(),
                       const SizedBox(height: 28),
                       Text(
                         'Kemarin',
@@ -174,20 +158,7 @@ class HomeView extends StackedView<HomeViewModel> {
                                     );
                                   },
                                 )
-                              : Container(
-                                  padding: const EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
-                                    color: kcGray5,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      'Belum ada pengeluaran',
-                                      style: ktParagraphMedium.copyWith(
-                                          color: kcGray3),
-                                    ),
-                                  ),
-                                ),
+                              : notFound(),
                     ],
                   ),
                 ),
@@ -218,6 +189,22 @@ class HomeView extends StackedView<HomeViewModel> {
             size: 16,
             color: kcWhite,
           ),
+        ),
+      ),
+    );
+  }
+
+  Container notFound() {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: kcGray5,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(
+        child: Text(
+          'Belum ada pengeluaran',
+          style: ktParagraphMedium.copyWith(color: kcGray3),
         ),
       ),
     );
