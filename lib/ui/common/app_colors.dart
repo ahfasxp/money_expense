@@ -15,3 +15,4 @@ const Color kcRed = Color(0xFFEB5757);
 const Color kcPurple1 = Color(0xFF9B51E0);
 const Color kcPurple2 = Color(0xFFbb6bd9);
 const Color kcGreen2 = Color(0xFF27AE60);
+const Color kcTeal = Color(0xFF46B5A7);

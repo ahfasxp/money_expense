@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:money_expense/app/app.bottomsheets.dart';
 import 'package:money_expense/app/app.locator.dart';
 import 'package:money_expense/enum/category_enum.dart';
-import 'package:money_expense/ui/common/app_svgs.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -19,12 +18,9 @@ class AddExpenseViewModel extends BaseViewModel {
   CategoryEnum? _selectedCategory = CategoryEnum.food;
   CategoryEnum? get selectedCategory => _selectedCategory;
 
-  String get selectedCategoryIcon =>
-      _selectedCategory?.iconPath ?? AppSvgs.food;
-
   void init() {
     // Set initial category value
-    categoryController.text = CategoryEnum.food.label;
+    categoryController.text = _selectedCategory?.label ?? '';
     _setupListeners();
   }
 

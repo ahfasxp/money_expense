@@ -36,9 +36,27 @@ class HomeView extends StackedView<HomeViewModel> {
               const SizedBox(
                 height: 20,
               ),
-              const ExpenseCard(
-                title: 'Pengeluaranmu hari ini',
-                amount: 'Rp. 30.000',
+              const IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: ExpenseCard(
+                        title: 'Pengeluaranmu hari ini',
+                        amount: 'Rp. 30.000',
+                        color: kcBlue,
+                      ),
+                    ),
+                    SizedBox(width: 19),
+                    Expanded(
+                      child: ExpenseCard(
+                        title: 'Pengeluaranmu bulan ini',
+                        amount: 'Rp. 30.000',
+                        color: kcTeal,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 20,

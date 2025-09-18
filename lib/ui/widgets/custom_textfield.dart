@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:money_expense/ui/common/app_colors.dart';
 import 'package:money_expense/ui/common/app_texts.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
   final String? hintText;
-  final String? prefixIconPath;
+  final Widget? prefixIcon;
   final Widget? suffixIcon;
   final void Function()? onTap;
   final TextInputType? keyboardType;
@@ -15,7 +14,7 @@ class CustomTextField extends StatelessWidget {
     super.key,
     this.controller,
     this.hintText,
-    this.prefixIconPath,
+    this.prefixIcon,
     this.suffixIcon,
     this.onTap,
     this.keyboardType,
@@ -48,7 +47,7 @@ class CustomTextField extends StatelessWidget {
         disabledBorder: border,
         errorBorder: border,
         focusedErrorBorder: border,
-        prefixIcon: prefixIconPath == null
+        prefixIcon: prefixIcon == null
             ? null
             : Padding(
                 padding: const EdgeInsets.only(left: 14, right: 10),
@@ -56,14 +55,7 @@ class CustomTextField extends StatelessWidget {
                   width: 24,
                   height: 24,
                   child: Center(
-                    child: SvgPicture.asset(
-                      prefixIconPath!,
-                      fit: BoxFit.scaleDown,
-                      colorFilter: const ColorFilter.mode(
-                        kcYellow,
-                        BlendMode.srcIn,
-                      ),
-                    ),
+                    child: prefixIcon,
                   ),
                 ),
               ),

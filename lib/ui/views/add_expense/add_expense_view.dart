@@ -52,7 +52,14 @@ class AddExpenseView extends StackedView<AddExpenseViewModel> {
             CustomTextField(
               controller: viewModel.categoryController,
               onTap: viewModel.showCategorySheet,
-              prefixIconPath: viewModel.selectedCategoryIcon,
+              prefixIcon: SvgPicture.asset(
+                viewModel.selectedCategory?.iconPath ?? AppSvgs.food,
+                fit: BoxFit.scaleDown,
+                colorFilter: ColorFilter.mode(
+                  viewModel.selectedCategory?.color ?? kcYellow,
+                  BlendMode.srcIn,
+                ),
+              ),
               hintText: 'Pilih Kategori',
               suffixIcon: IconButton(
                 onPressed: null,
