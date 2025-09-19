@@ -74,7 +74,10 @@ class HomeView extends StackedView<HomeViewModel> {
                 ),
                 // Horizontal ListView for categories with shimmer
                 viewModel.isLoading
-                    ? _buildCategoryListShimmer()
+                    ? SizedBox(
+                        height: 162,
+                        child: _buildCategoryListShimmer(),
+                      )
                     : viewModel.categoryTotals.isNotEmpty
                         ? IntrinsicHeight(
                             child: SingleChildScrollView(
